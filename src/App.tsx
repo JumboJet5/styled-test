@@ -1,106 +1,85 @@
-import React, { FC, ReactNode, useCallback, useState } from 'react';
-import { ThemeProvider } from "styled-components";
-import { darkTheme, lightTheme } from "./theme";
+import React from 'react';
 import { UsualStyledDiv, UsualVarDiv, Wrapper } from "./styles";
+import { oneHundredElements } from "./utils/synthetic";
+import { SomeSmartComponent } from "./components/someSmartComponent";
+import { StyledThemeWrapper, VarThemeWrapper } from "./components/themeWrappers";
 
-const oneThousandElements = new Array(1000).fill(0).map((_, i) => i)
-
-function someCalculations() {
-  let multi = 1
-  for (let i = 2; i < 200; i++) {
-    multi = multi * i
-  }
-  return multi
-}
+const smallStackOfItems = new Array(5).fill(0).map((_, i) => i)
 
 function App() {
   return (
     <>
-      <ThemeWrapper>
-        {oneThousandElements.map(item => (
-          <BlockWrapper key={item}>
-            <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
-            <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
-            <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
-            <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
-            <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
-          </BlockWrapper>
+      <h2>Only CSS vars</h2>
+      <VarThemeWrapper>
+        {oneHundredElements.map(item => (
+          <SomeSmartComponent key={item}>
+            <Wrapper>
+              <Wrapper>
+                {smallStackOfItems.map(subItem => (
+                  <SomeSmartComponent key={subItem}>
+                    <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
+                  </SomeSmartComponent>
+                ))}
+              </Wrapper>
+              <Wrapper>
+                {smallStackOfItems.map(subItem => (
+                  <SomeSmartComponent key={subItem}>
+                    <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
+                  </SomeSmartComponent>
+                ))}
+              </Wrapper>
+            </Wrapper>
+          </SomeSmartComponent>
         ))}
-      </ThemeWrapper>
-      <ThemeWrapper>
-        {oneThousandElements.map(item => (
-          <BlockWrapper key={item}>
-            <UsualStyledDiv isEven={item % 2 === 0}/>
-            <UsualStyledDiv isEven={item % 2 === 0}/>
-            <UsualStyledDiv isEven={item % 2 === 0}/>
-            <UsualStyledDiv isEven={item % 2 === 0}/>
-            <UsualStyledDiv isEven={item % 2 === 0}/>
-          </BlockWrapper>
+      </VarThemeWrapper>
+      <hr/>
+      <h2>CSS vars with styled theme wrapper</h2>
+      <StyledThemeWrapper>
+        {oneHundredElements.map(item => (
+          <SomeSmartComponent key={item}>
+            <Wrapper>
+              <Wrapper>
+                {smallStackOfItems.map(subItem => (
+                  <SomeSmartComponent key={subItem}>
+                    <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
+                  </SomeSmartComponent>
+                ))}
+              </Wrapper>
+              <Wrapper>
+                {smallStackOfItems.map(subItem => (
+                  <SomeSmartComponent key={subItem}>
+                    <UsualVarDiv className={item % 2 === 0 ? 'even' : 'odd'}/>
+                  </SomeSmartComponent>
+                ))}
+              </Wrapper>
+            </Wrapper>
+          </SomeSmartComponent>
         ))}
-      </ThemeWrapper>
-      <ThemeWrapper>
-        {oneThousandElements.map(item => (
-          <UsualVarDiv key={item} className={item % 2 === 0 ? 'even' : 'odd'}>
-            <BlockWrapper/>
-            <BlockWrapper/>
-            <BlockWrapper/>
-            <BlockWrapper/>
-            <BlockWrapper/>
-          </UsualVarDiv>
+      </StyledThemeWrapper>
+      <hr/>
+      <h2>Only styled theme wrapper</h2>
+      <StyledThemeWrapper>
+        {oneHundredElements.map(item => (
+          <SomeSmartComponent key={item}>
+            <Wrapper>
+              <Wrapper>
+                {smallStackOfItems.map(subItem => (
+                  <SomeSmartComponent key={subItem}>
+                    <UsualStyledDiv isEven={item % 2 === 0}/>
+                  </SomeSmartComponent>
+                ))}
+              </Wrapper>
+              <Wrapper>
+                {smallStackOfItems.map(subItem => (
+                  <SomeSmartComponent key={subItem}>
+                    <UsualStyledDiv isEven={item % 2 === 0}/>
+                  </SomeSmartComponent>
+                ))}
+              </Wrapper>
+            </Wrapper>
+          </SomeSmartComponent>
         ))}
-      </ThemeWrapper>
-      <ThemeWrapper>
-        {oneThousandElements.map(item => (
-          <UsualStyledDiv key={item} isEven={item % 2 === 0}>
-            <BlockWrapper/>
-            <BlockWrapper/>
-            <BlockWrapper/>
-            <BlockWrapper/>
-            <BlockWrapper/>
-          </UsualStyledDiv>
-        ))}
-      </ThemeWrapper>
-    </>
-  );
-}
-
-const BlockWrapper: FC<{ children?: ReactNode }> = ({ children }) => {
-  someCalculations()
-
-  return <>{children}</>
-}
-
-const ThemeWrapper: FC<{ children?: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState(lightTheme)
-
-  const toggleTheme = useCallback(() => setTheme(prev => prev.THEME_NAME === 'light' ? darkTheme : lightTheme), [])
-
-  const synthetic = useCallback(() => {
-    let counter = 0
-    const startTime = Date.now()
-    const trigger = () => {
-      if (Date.now() - startTime < 5000) {
-        setTimeout(() => {
-          counter++
-          toggleTheme()
-          trigger()
-        })
-      } else {
-        console.log({ counter })
-      }
-    }
-    trigger()
-  }, [toggleTheme])
-
-  return (
-    <>
-      <button onClick={toggleTheme}>toggle</button>
-      <button onClick={synthetic}>synthetic</button>
-      <ThemeProvider theme={theme}>
-        <Wrapper className={theme.THEME_NAME}>
-          {children}
-        </Wrapper>
-      </ThemeProvider>
+      </StyledThemeWrapper>
     </>
   );
 }
