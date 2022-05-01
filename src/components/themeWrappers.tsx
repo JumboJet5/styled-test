@@ -4,6 +4,9 @@ import { syntheticTest } from "../utils/synthetic";
 import { ThemeProvider } from "styled-components";
 import { Wrapper } from "../styles";
 
+// theme managing wrappers
+
+// wrapper for styled components
 export const StyledThemeWrapper: FC<{ children?: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState(lightTheme)
   const [syntheticCount, setSyntheticCount] = useState(0)
@@ -25,6 +28,7 @@ export const StyledThemeWrapper: FC<{ children?: ReactNode }> = ({ children }) =
   );
 }
 
+// wrapper for css vars components (styled components with theme managing by css vars)
 export const VarThemeWrapper: FC<{ children?: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [syntheticCount, setSyntheticCount] = useState(0)
